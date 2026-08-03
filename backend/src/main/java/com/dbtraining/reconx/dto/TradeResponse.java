@@ -1,23 +1,11 @@
 package com.dbtraining.reconx.dto;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-
-/** TICKET-ADV053 — TradeResponse DTO returned by GET / POST endpoints. */
-public record TradeResponse(
-        Long id,
-        String tradeRef,
-        Long instrumentId,
-        String instrumentSymbol,
-        Long counterpartyId,
-        String counterpartyName,
-        String assetClass,
-        String side,
-        BigDecimal quantity,
-        BigDecimal price,
-        LocalDate tradeDate,
-        String status,
-        Instant createdAt,
-        Instant modifiedAt
-) {}
+public class TradeResponse extends com.dbtraining.reconx.dto.common.TradeResponse {
+    public TradeResponse(Long id, String tradeRef, Long counterpartyId, String counterpartyName, Long instrumentId,
+                         String instrumentSymbol, java.math.BigDecimal quantity, java.math.BigDecimal price,
+                         java.time.LocalDate tradeDate, String status, java.time.Instant createdAt,
+                         java.time.Instant modifiedAt) {
+        super(id, tradeRef, counterpartyId, counterpartyName, instrumentId, instrumentSymbol, quantity, price,
+                tradeDate, status, createdAt, modifiedAt);
+    }
+}
