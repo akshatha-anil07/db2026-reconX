@@ -1,17 +1,24 @@
 # ============================================================================
-# TICKET-ADV146 — Spring Boot Dockerfile (multi-stage Maven -> JRE slim)
+# TICKET-ADV146 — Spring Boot Dockerfile (multi-stage Maven -> JRE 25 slim)
 #
-# TODO: Implement a two-stage Docker build:
-#   Stage 1 (build): Use eclipse-temurin:25-jdk to compile the JAR with Maven.
-#   Stage 2 (runtime): Copy ONLY the JAR onto a slim eclipse-temurin:25-jre-alpine image.
-#   - Create a non-root user 'reconx' for security.
-#   - EXPOSE port 8080.
-#   - Use JAVA_OPTS env variable in ENTRYPOINT for runtime tuning.
+# Stage 1: build the JAR with Temurin JDK 25 + Maven.
+# Stage 2: copy ONLY the JAR onto a slim JRE image.
 # ============================================================================
 
-FROM eclipse-temurin:25-jdk
+FROM eclipse-temurin:25-jdk AS build
+WORKDIR /workspace
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
+RUN ./mvnw -q -B dependency:go-offline || true
+COPY src src
+RUN ./mvnw -q -B -DskipTests package && \
+    mv target/reconx-*.jar app.jar
+
+FROM eclipse-temurin:25-jre-alpine
+RUN addgroup -S reconx && adduser -S reconx -G reconx
+USER reconx
 WORKDIR /app
-COPY . .
-RUN chmod +x mvnw && ./mvnw -q -B -DskipTests package
+COPY --from=build /workspace/app.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "target/reconx-0.0.1-SNAPSHOT.jar"]
+ENV JAVA_OPTS=""
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar app.jar"]
