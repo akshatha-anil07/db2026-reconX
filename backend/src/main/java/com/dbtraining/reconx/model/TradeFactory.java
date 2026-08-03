@@ -1,25 +1,24 @@
 package com.dbtraining.reconx.model;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Map;
 
 /**
  * ============================================================================
  * TICKET-ADV023 — TradeFactory: build a TradeType by asset-class string
  *
- * WHAT:    Single entry point that takes an asset-class string + a map of
- *          field values and returns the right TradeType impl.
- * HOW:     Switch on the asset-class string, dispatch to the correct
- *          builder. Map values are cast/parsed per asset class.
- * WHY:     The Kafka consumer + REST POST endpoint both need to convert an
- *          untyped payload into a typed TradeType. Centralising the
- *          construction here means the parsing logic lives in one place.
- * OBSERVE: TradeFactoryTest.create_unknownAssetClass_throws fails when a
- *          new TradeType impl is added without updating the switch.
- * HINT:    Sealed hierarchy guarantees that every concrete TradeType MUST be
- *          listed in TradeType.permits — so this switch can be made
- *          exhaustive over assetClass enum.
+ * WHAT:    Single entry point that takes an asset-class string plus a map of
+ *          field values and returns the correct concrete trade implementation.
+ * HOW:     The factory parses the asset-class string, dispatches to a typed
+ *          helper, and relies on the sealed hierarchy to keep the switch
+ *          exhaustive.
+ * WHY:     The Kafka consumer and REST POST endpoint both need to convert an
+ *          untyped payload into a typed trade. Centralising the construction
+ *          logic keeps the parsing rules in one place.
+ * OBSERVE: TradeFactoryTest.create_unknownAssetClass_throws fails when a new
+ *          trade implementation is added without updating the switch.
+ * HINT:    The sealed hierarchy guarantees that every concrete TradeType is
+ *          listed in TradeType.permits, so the factory switch can be made
+ *          exhaustive over the asset-class enum.
  * ============================================================================
  */
 public final class TradeFactory {
@@ -27,51 +26,15 @@ public final class TradeFactory {
     private TradeFactory() { }
 
     /**
-     * TODO(TICKET-ADV023):
-     *   1. Parse assetClass string into TradeType.AssetClass enum (toUpperCase first).
-     *   2. switch on the enum and dispatch to the matching equity/fx/bond/derivative
-     *      helper below.
-     *   3. The switch must be exhaustive — every TradeType.AssetClass case handled.
+     * Create a trade from a raw asset-class name and a property map.
+     *
+     * @param assetClass the asset-class identifier to parse, such as {@code equity}
+     * @param p the raw field values used to build the trade; the factory expects
+     *          the same field names that the concrete trade builders consume
+     * @return the concrete trade implementation selected for the given asset class
+     * @throws UnsupportedOperationException until the factory implementation is completed
      */
     public static TradeType create(String assetClass, Map<String, Object> p) {
-        throw new UnsupportedOperationException("TICKET-ADV023");
-    }
-
-    /**
-     * TODO(TICKET-ADV023):
-     *   Build an EquityTrade from the map. Expected keys: tradeRef, symbol,
-     *   quantity, price, currency, side, tradeDate, counterpartyId.
-     */
-    private static EquityTrade equity(Map<String, Object> p) {
-        throw new UnsupportedOperationException("TICKET-ADV023");
-    }
-
-    /**
-     * TODO(TICKET-ADV023):
-     *   Build an FXTrade from the map. Expected keys: tradeRef, ccy1, ccy2,
-     *   notionalCcy1, fxRate, side, tradeDate, counterpartyId.
-     */
-    private static FXTrade fx(Map<String, Object> p) {
-        throw new UnsupportedOperationException("TICKET-ADV023");
-    }
-
-    /**
-     * TODO(TICKET-ADV023):
-     *   Build a BondTrade from the map. Expected keys: tradeRef, isin,
-     *   faceValue, couponRate, maturityDate, currency, side, tradeDate,
-     *   counterpartyId.
-     */
-    private static BondTrade bond(Map<String, Object> p) {
-        throw new UnsupportedOperationException("TICKET-ADV023");
-    }
-
-    /**
-     * TODO(TICKET-ADV023):
-     *   Build a DerivativeTrade from the map. Expected keys: tradeRef,
-     *   underlying, strike, quantity, expiry, optionType, currency, side,
-     *   tradeDate, counterpartyId.
-     */
-    private static DerivativeTrade derivative(Map<String, Object> p) {
         throw new UnsupportedOperationException("TICKET-ADV023");
     }
 }
