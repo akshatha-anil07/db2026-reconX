@@ -79,7 +79,7 @@ public final class BondTrade implements TradeType {
      */
     @Override public Money notional() {
         // TODO(TICKET-ADV021): return new Money(faceValue, currency).
-        throw new UnsupportedOperationException("TICKET-ADV021");
+        return new Money(faceValue, currency);
     }
 
     /**
