@@ -77,10 +77,11 @@ public enum ReconciliationRule {
         BigDecimal priceDiff = internalPrice.subtract(externalPrice).abs();
         BigDecimal priceDiffPct = internalPrice.signum() == 0
                 ? BigDecimal.ZERO
-                : priceDiff.divide(internalPrice, 10, java.math.RoundingMode.HALF_UP);
+                : priceDiff.divide(internalPrice, 6, java.math.RoundingMode.HALF_UP);
         BigDecimal qtyDiff = internalQty.subtract(externalQty).abs();
 
-        return priceDiffPct.compareTo(priceTolerancePct) <= 0
-                && qtyDiff.compareTo(qtyToleranceAbs) <= 0;
+        boolean priceOk = priceDiffPct.compareTo(priceTolerancePct) <= 0;
+        boolean qtyOk   = qtyDiff.compareTo(qtyToleranceAbs) <= 0;
+        return priceOk && qtyOk;
     }
 }
