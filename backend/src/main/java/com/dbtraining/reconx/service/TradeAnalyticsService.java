@@ -57,7 +57,12 @@ public class TradeAnalyticsService {
     private long counterpartyIdOf(TradeType t) {
         // TODO(TICKET-ADV018): exhaustive switch over the sealed TradeType
         //   hierarchy returning t.counterpartyId() for each concrete subtype.
-        throw new UnsupportedOperationException("TICKET-ADV018");
+        return switch (t) {
+            case EquityTrade e -> e.counterpartyId();
+            case FXTrade f -> f.counterpartyId();
+            case BondTrade b -> b.counterpartyId();
+            case DerivativeTrade d -> d.counterpartyId();
+        };
     }
 
     public record NotionalSummary(long count, BigDecimal total) {}
