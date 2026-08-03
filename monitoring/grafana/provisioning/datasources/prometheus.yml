@@ -1,11 +1,9 @@
-# TICKET-ADV150 — Auto-provision the Prometheus datasource
+# TICKET-ADV150 — Auto-provision the Prometheus datasource (skeleton)
+#
+# TODO: Configure Grafana to auto-provision Prometheus as a datasource.
+#   - url: http://prometheus:9090  (use service name, NOT localhost)
+#   - set as default datasource
+#   - uid: reconx-prometheus (referenced by dashboard JSON)
 apiVersion: 1
-datasources:
-  - name: Prometheus
-    uid: reconx-prometheus
-    type: prometheus
-    access: proxy
-    url: http://prometheus:9090
-    isDefault: true
-    jsonData:
-      timeInterval: 10s
+datasources: []
+# TODO: add datasource config

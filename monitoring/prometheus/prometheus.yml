@@ -1,18 +1,22 @@
-# TICKET-ADV149 — Prometheus scrape config
+# TICKET-ADV149 — Prometheus scrape config (skeleton)
+#
+# TODO: Point Prometheus at the backend actuator endpoint.
+#   - metrics_path: /api/actuator/prometheus
+#   - target: backend:8080  (use Docker service name, NOT localhost)
+#   - Load alerts.yml via rule_files
 global:
-  scrape_interval: 10s
-  evaluation_interval: 10s
+  scrape_interval: 15s
+  evaluation_interval: 15s
 
-rule_files:
-  - "alerts.yml"
+# TODO(ADV149): add rule_files entry for alerts.yml
 
 scrape_configs:
-
-  - job_name: 'reconx-backend'
-    metrics_path: '/api/actuator/prometheus'
-    static_configs:
-      - targets: ['backend:8080']
-
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+
+  # TODO(ADV149): add reconx-backend scrape job
+  # - job_name: 'reconx-backend'
+  #   metrics_path: '/api/actuator/prometheus'
+  #   static_configs:
+  #     - targets: ['backend:8080']

@@ -1,17 +1,17 @@
 # ============================================================================
 # TICKET-ADV147 — React multi-stage build (npm -> nginx)
+#
+# TODO: Implement a two-stage Docker build:
+#   Stage 1 (build): Use node:22-alpine to install deps and run `npm run build`.
+#   Stage 2 (runtime): Copy dist/ into nginx:1.27-alpine html root.
+#   - Copy nginx.conf for SPA fallback and /api/ proxy rewrite.
+#   - EXPOSE port 80.
 # ============================================================================
-FROM node:22-alpine AS build
-WORKDIR /app
-COPY package.json package-lock.json* ./
-# `npm install` (not `npm ci`) so a stale package-lock.json doesn't block the
-# image build. Trade-off: not bit-for-bit deterministic. For a real prod
-# image switch to `npm ci` and treat lockfile freshness as a PR gate.
-RUN npm install --no-audit --no-fund
-COPY . .
-RUN npm run build
 
-FROM nginx:1.27-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+FROM node:22-alpine
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run build
+EXPOSE 5173
+CMD ["npm", "run", "preview"]
