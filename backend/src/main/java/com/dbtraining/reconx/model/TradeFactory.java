@@ -1,5 +1,8 @@
 package com.dbtraining.reconx.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import java.util.Map;
 
 /**
