@@ -104,7 +104,7 @@ public final class DerivativeTrade implements TradeType {
      */
     @Override public Money notional() {
         // TODO(TICKET-ADV022): return new Money(strike * quantity, currency).
-        throw new UnsupportedOperationException("TICKET-ADV022");
+        return new Money(strike.multiply(quantity), currency);
     }
 
     /**
