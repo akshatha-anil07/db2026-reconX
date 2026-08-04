@@ -32,20 +32,18 @@ public class ReconController {
 
     public ReconController(ReconBreakRepository breaks) { this.breaks = breaks; }
 
-    
     @PostMapping("/run")
     @Operation(summary = "Trigger a reconciliation job (async)")
     public ResponseEntity<Map<String, String>> runRecon(@Valid @RequestBody ReconRunRequest req) {
-    String jobId = UUID.randomUUID().toString();
-    // In the full impl this writes a row to recon_jobs and a worker picks it up.
-    return ResponseEntity.accepted().body(Map.of("jobId", jobId, "status", "QUEUED"));
-}
+        String jobId = UUID.randomUUID().toString();
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(Map.of("jobId", jobId, "status", "QUEUED"));
+    }
 
     @GetMapping("/jobs/{jobId}/results")
     @Operation(summary = "Get results for a recon job")
     public List<ReconBreak> results(@PathVariable String jobId) {
-        // The trainer-copy stub returns all current open breaks.
-        return breaks.findAll();
+        return Collections.emptyList();
     }
 
     @PutMapping("/results/{id}/resolve")
@@ -53,10 +51,8 @@ public class ReconController {
     public ResponseEntity<ReconBreak> resolve(@PathVariable Long id,
                                               @RequestBody Map<String, String> body) {
         ReconBreak rb = breaks.findById(id)
-                .orElseThrow(() -> new TradeNotFoundException("recon_break " + id));
-        rb.resolve(body.getOrDefault("note", "manually resolved"));
+                .orElseThrow(() -> new TradeNotFoundException(id.toString()));
+        rb.resolve(body.get("note"));
         return ResponseEntity.ok(breaks.save(rb));
     }
-
-    
 }
