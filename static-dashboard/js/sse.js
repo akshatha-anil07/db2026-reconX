@@ -57,6 +57,7 @@
       FEED_EL.lastElementChild.remove();
     }
   }
+  
 
   // ── TICKET-ADV104 — EventSource connection ─────────────────────────────────
   function connect() {
